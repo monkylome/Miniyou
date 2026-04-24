@@ -5,14 +5,15 @@
 }
 
 body {
-  background: #0a0a0a;
-  color: #d8d0c8;
+  background: #050f05;
+  color: #00ff41;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  font-family: serif;
+  font-family: 'VT323', monospace;
+  font-size: 18px;
 }
 
 #app {
@@ -22,21 +23,82 @@ body {
   align-items: center;
   justify-content: center;
   transition: opacity 0.4s ease;
+  position: relative;
+}
+
+#app::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 255, 65, 0.04) 3px,
+    rgba(0, 255, 65, 0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
 }
 
 button {
   background: transparent;
-  border: 1px solid #d8d0c8;
-  color: #d8d0c8;
-  padding: 0.6em 2em;
+  border: 1px solid #00ff41;
+  color: #00ff41;
+  padding: 0.4em 1.8em;
   font-family: inherit;
   font-size: 1rem;
   cursor: pointer;
   letter-spacing: 0.1em;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.15s;
 }
 
 button:hover {
-  background: #d8d0c8;
-  color: #0a0a0a;
+  background: #00ff4122;
+}
+
+input[type="text"] {
+  background: transparent;
+  border: 1px solid #00ff41;
+  color: #00ff41;
+  padding: 0.4em 0.8em;
+  font-family: inherit;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  outline: none;
+  caret-color: #00ff41;
+}
+
+input[type="text"]::placeholder {
+  color: #00ff4166;
+}
+
+@keyframes bounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.22); }
+  70%  { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+
+@keyframes idle-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+@keyframes eat {
+  0%, 100% { transform: translateY(0); }
+  40%       { transform: translateY(-9px); }
+}
+
+@keyframes screen-shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-4px); }
+  40%       { transform: translateX(4px); }
+  60%       { transform: translateX(-3px); }
+  80%       { transform: translateX(3px); }
+}
+
+@keyframes particle-rise {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(0.5); }
 }
