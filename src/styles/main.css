@@ -102,3 +102,21 @@ input[type="text"]::placeholder {
   0%   { opacity: 1; transform: translateY(0) scale(1); }
   100% { opacity: 0; transform: translateY(-40px) scale(0.5); }
 }
+
+@keyframes timer-drain {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92%       { opacity: 1; }
+  93%       { opacity: 0.4; }
+  94%       { opacity: 1; }
+  97%       { opacity: 0.7; }
+  98%       { opacity: 1; }
+}
+
+#app {
+  animation: flicker 8s ease-in-out infinite;
+}

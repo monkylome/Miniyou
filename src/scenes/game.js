@@ -44,7 +44,22 @@ export class GameScene {
         flex-direction: column;
         gap: 1.5rem;
       ">
-        ${timer ? `<div id="beat-timer" style="font-size:0.8rem; letter-spacing:0.15em; opacity:0.7; text-align:right;">⏱ <span id="beat-timer-count">${timer.seconds}</span>s</div>` : ''}
+        ${timer ? `
+          <div style="display:flex; flex-direction:column; gap:0.3rem;">
+            <div style="font-size:0.75rem; letter-spacing:0.15em; opacity:0.6; display:flex; justify-content:space-between;">
+              <span style="color:#ff4444;">⚠ TIME REMAINING</span>
+              <span id="beat-timer-count">${timer.seconds}s</span>
+            </div>
+            <div style="height:3px; background:#1a1a1a; width:100%;">
+              <div id="timer-bar" style="
+                height:100%;
+                background:#ff4444;
+                width:100%;
+                animation: timer-drain ${timer.seconds}s linear forwards;
+              "></div>
+            </div>
+          </div>
+        ` : ''}
         <div style="display: flex; align-items: flex-end; gap: 1rem;">
 
           ${this._buildSprite(characterState)}
@@ -101,8 +116,23 @@ export class GameScene {
 
   _showTimerExpiry(sadLine) {
     if (this._countdownId) clearInterval(this._countdownId)
+
+    // Red flash
+    const flash = document.createElement('div')
+    flash.style.cssText = `
+      position:fixed; inset:0; background:rgba(255,0,0,0.18);
+      pointer-events:none; z-index:1000;
+      animation: particle-rise 0.6s ease forwards;
+    `
+    document.body.appendChild(flash)
+    setTimeout(() => flash.remove(), 600)
+
     const lineEl = this.container.querySelector('p')
     if (lineEl) lineEl.textContent = sadLine
+
+    const timerBar = document.getElementById('beat-timer')
+    if (timerBar) timerBar.style.display = 'none'
+
     const inputEl = document.getElementById('beat-input')
     if (inputEl) {
       inputEl.innerHTML = `<button id="expire-btn">Continue…</button>`
