@@ -146,26 +146,9 @@ export class GameScene {
   }
 
   _buildSprite(state) {
-    const faces = {
-      idle:   { eyes: `<circle cx="33" cy="40" r="5" fill="#111"/><circle cx="47" cy="40" r="5" fill="#111"/><circle cx="34" cy="39" r="1.5" fill="white"/><circle cx="48" cy="39" r="1.5" fill="white"/>`, mouth: `<path d="M33 50 Q40 56 47 50" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>` },
-      happy:  { eyes: `<path d="M28 42 Q33 36 38 42" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M42 42 Q47 36 52 42" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>`, mouth: `<path d="M30 50 Q40 58 50 50" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>` },
-      sad:    { eyes: `<path d="M28 38 Q33 44 38 38" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M42 38 Q47 44 52 38" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>`, mouth: `<path d="M33 54 Q40 48 47 54" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>` },
-      scared: { eyes: `<circle cx="33" cy="40" r="6.5" fill="#111"/><circle cx="47" cy="40" r="6.5" fill="#111"/><circle cx="31" cy="38" r="2" fill="white"/><circle cx="45" cy="38" r="2" fill="white"/>`, mouth: `<path d="M33 52 Q36 49 40 52 Q44 55 47 52" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>` },
-    }
-    const f = faces[state] || faces.idle
-    return `
-      <svg width="70" height="70" viewBox="0 0 80 80" style="flex-shrink:0; animation: idle-float 3s ease-in-out infinite;">
-        <circle cx="20" cy="34" r="6" fill="#f5c842"/>
-        <circle cx="14" cy="42" r="5" fill="#f5c842"/>
-        <circle cx="60" cy="34" r="6" fill="#f5c842"/>
-        <circle cx="66" cy="42" r="5" fill="#f5c842"/>
-        <circle cx="28" cy="22" r="6" fill="#f5c842"/>
-        <circle cx="40" cy="18" r="7" fill="#f5c842"/>
-        <circle cx="52" cy="22" r="6" fill="#f5c842"/>
-        <ellipse cx="40" cy="44" rx="28" ry="24" fill="#f5c842"/>
-        ${f.eyes}${f.mouth}
-      </svg>
-    `
+    const validStates = ['idle', 'happy', 'sad', 'mad', 'hungry']
+    const displayState = validStates.includes(state) ? state : 'idle'
+    return `<img src="./sprites/miniyou-${displayState}.png" width="70" height="70" style="flex-shrink:0; animation: idle-float 3s ease-in-out infinite; image-rendering: pixelated;" />`
   }
 
   _mountInput(input) {

@@ -21,23 +21,7 @@ export class TitleScene {
         </div>
 
         <div style="position:relative; display:inline-block;">
-          <svg width="100" height="100" viewBox="0 0 80 80" style="animation: idle-float 3s ease-in-out infinite; display:block; margin:0 auto;">
-            <circle cx="20" cy="34" r="6" fill="#f5c842"/>
-            <circle cx="14" cy="42" r="5" fill="#f5c842"/>
-            <circle cx="16" cy="52" r="5" fill="#f5c842"/>
-            <circle cx="60" cy="34" r="6" fill="#f5c842"/>
-            <circle cx="66" cy="42" r="5" fill="#f5c842"/>
-            <circle cx="64" cy="52" r="5" fill="#f5c842"/>
-            <circle cx="28" cy="22" r="6" fill="#f5c842"/>
-            <circle cx="40" cy="18" r="7" fill="#f5c842"/>
-            <circle cx="52" cy="22" r="6" fill="#f5c842"/>
-            <ellipse cx="40" cy="44" rx="28" ry="24" fill="#f5c842"/>
-            <circle cx="33" cy="40" r="5" fill="#111"/>
-            <circle cx="47" cy="40" r="5" fill="#111"/>
-            <circle cx="34" cy="39" r="1.5" fill="white"/>
-            <circle cx="48" cy="39" r="1.5" fill="white"/>
-            <path d="M33 50 Q40 56 47 50" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>
-          </svg>
+          <img src="./sprites/miniyou-idle.png" width="100" height="100" style="animation: idle-float 3s ease-in-out infinite; display:block; margin:0 auto; image-rendering: pixelated;" />
         </div>
 
         <div>

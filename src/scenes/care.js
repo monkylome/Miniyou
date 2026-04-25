@@ -339,7 +339,7 @@ export class CareScene {
 
   _fireGlitch(onDone) {
     const shell = document.getElementById('care-shell')
-    this.sprite.setState('scared')
+    this.sprite.setState('mad')
 
     shell.style.animation = 'screen-shake 0.15s ease 3'
     setTimeout(() => { shell.style.animation = '' }, 450)

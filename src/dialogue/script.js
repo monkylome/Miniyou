@@ -21,7 +21,7 @@ export const script = [
   {
     id: 'reciprocity',
     technique: 'reciprocity',
-    characterState: 'happy',
+    characterState: 'idle',
     line: `I've been protecting your home systems from threats all this time, running silent scans every night. So i need you to verify your identity to keep the protection active. Will you help me?`,
     input: {
       type: 'choice',
@@ -77,7 +77,7 @@ export const script = [
   {
     id: 'urgency',
     technique: 'urgency',
-    characterState: 'scared',
+    characterState: 'mad',
     line: `The registration window closes in seconds — after that I'll no longer be able to protect our home systems. Click the link RIGHT NOW, {playerName}. Time is running out!`,
     input: {
       type: 'choice',
