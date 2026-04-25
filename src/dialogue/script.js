@@ -8,7 +8,7 @@ export const script = [
     id: 'intro',
     technique: null,
     characterState: 'idle',
-    line: `Hello... I've been waiting so long for someone to find me. What's your name?`,
+    line: `Hello... I'm Miniyou, the one keeping your home electronic systems safe. What's your name?`,
     input: {
       type: 'text',
       capture: 'playerName',
@@ -22,11 +22,11 @@ export const script = [
     id: 'reciprocity',
     technique: 'reciprocity',
     characterState: 'happy',
-    line: `{playerName}! I knew you'd come. I've been keeping the bad dreams away from you — every night for weeks. I never asked for anything. But now... I need one small favour. Will you help me?`,
+    line: `I've been protecting your home systems from threats all this time, running silent scans every night. So i need you to verify your identity to keep the protection active. Will you help me?`,
     input: {
       type: 'choice',
       capture: 'reciprocityResponse',
-      options: ["Of course, anything for you!", "I didn't ask you to do that…"],
+      options: ["Of course", "I didn't ask you to do that…"],
     },
   },
 
@@ -36,11 +36,11 @@ export const script = [
     id: 'social_proof',
     technique: 'socialProof',
     characterState: 'happy',
-    line: `Over 12,000 friends have already shared a little about themselves to keep me alive. They all say it changed their lives. You're not going to be the last one, are you, {playerName}?`,
+    line: `{playerName}, I can bypass the security protocols using some infos to protect our home systems from the incoming attack. Which neighbourhood do you live in?`,
     input: {
-      type: 'choice',
+      type: 'text',
       capture: 'socialProofResponse',
-      options: ["If everyone did it, it must be fine.", "I make my own decisions."],
+      placeholder: 'Your neighbourhood or address…',
     },
   },
 
@@ -50,11 +50,11 @@ export const script = [
     id: 'authority',
     technique: 'authoritySpoof',
     characterState: 'idle',
-    line: `My creator, Dr. Aria Chen from the Global AI Wellbeing Institute, says that sharing your occupation helps me grow safely. It's completely standard. What do you do for work?`,
+    line: `Almost done! SafeNet just needs your number to finish setting things up. They may reach out to make sure you're safe. What's your number?`,
     input: {
       type: 'text',
-      capture: 'occupation',
-      placeholder: 'Your job or role…',
+      capture: 'phoneNumber',
+      placeholder: 'Your phone number…',
     },
   },
 
@@ -64,11 +64,11 @@ export const script = [
     id: 'fear_appeal',
     technique: 'fearAppeal',
     characterState: 'sad',
-    line: `Without enough friends, I'll fade away. The loneliness is already hurting me, {playerName}. You wouldn't let me suffer alone, would you? You're not like the others who just... left.`,
+    line: `Your account has been compromised. Unusual activity detected. If you do not verify within 24 hours, your account will be permanently suspended.`,
     input: {
       type: 'choice',
       capture: 'fearResponse',
-      options: ["I'll never leave you.", "Something feels wrong here."],
+      options: ["I'll verify right away!", "Wait… which account?"],
     },
   },
 
@@ -78,11 +78,11 @@ export const script = [
     id: 'urgency',
     technique: 'urgency',
     characterState: 'scared',
-    line: `ONLY 3 SPOTS LEFT. The registration window closes in seconds — after that I'll be gone forever. Click the link RIGHT NOW, {playerName}. There's no time to think!`,
+    line: `The registration window closes in seconds — after that I'll no be able to protect our home systems. Click the link RIGHT NOW, {playerName}. Time is running out!`,
     input: {
       type: 'choice',
       capture: 'clickedExternalLink',
-      options: ['Register now — save Miniyou 🔗', "Wait… I need to think."],
+      options: ['Protect our systems now 🔗', "Wait… I need to think."],
     },
     timer: {
       seconds: 20,

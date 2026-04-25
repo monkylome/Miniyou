@@ -1,12 +1,12 @@
 // One real-world attack example per technique.
 export const attackExamples = {
-  reciprocity: `A phishing email offers a "free security scan" that finds threats on your device. Then it asks for your credit card "just to remove them." You feel obligated because they already helped you.`,
+  reciprocity: `A fake "home security app" notifies you that it has been protecting your network for weeks — for free. Then it asks you to verify your identity to "keep the protection active." You feel obligated because it already helped you.`,
 
-  socialProof: `A fake login page shows "9,847 users verified their account today." The number makes the request feel normal and safe — even though it's fabricated to reduce your suspicion.`,
+  socialProof: `A phishing site asks for your address to "verify your area's network security zone." It shows a map with thousands of green dots — neighbours who already verified. The crowd makes the request feel safe and normal.`,
 
-  authoritySpoof: `An email appears to come from "Microsoft Security Team" or your bank's official address. The logo, formatting, and title are copied exactly. The authority makes you skip your usual caution.`,
+  authoritySpoof: `A message arrives from "SafeNet Security" asking for your phone number to "complete your home protection registration." The official name and process make it seem like a standard onboarding step — not a data harvest.`,
 
-  fearAppeal: `"Your account has been compromised. Unusual activity detected. If you do not verify within 24 hours, your account will be permanently suspended." Fear overrides critical thinking.`,
+  fearAppeal: `"Your account has been compromised. Unusual activity detected on your home network. If you do not verify within 24 hours, your access will be permanently suspended." Fear overrides critical thinking.`,
 
-  urgency: `"FINAL WARNING: Your subscription expires in 10 minutes. Click here to keep access." The artificial countdown pressure stops you from pausing to verify whether the threat is real.`,
+  urgency: `"FINAL WARNING: Your home security registration window closes in 20 seconds. Click here to keep your systems protected." The countdown stops you from pausing to verify whether the threat is even real.`,
 }

@@ -1,16 +1,17 @@
 import { playerData } from '../state/playerData.js'
 import { CharacterSprite } from '../ui/characterSprite.js'
+import { sfx } from '../audio/sfx.js'
 
-const REQUIRED_SECONDS  = 30
+const REQUIRED_SECONDS  = 20
 const REQUIRED_ACTIONS  = 2
 const GLITCH_MIN_MS     = 15000
 const GLITCH_MAX_MS     = 45000
 
-const PET_LINES   = ['*purrs*', '*nuzzles you*', 'hehe~', '^_^', '*wiggles*']
+const PET_LINES = ['heyyy', 'feed me!', 'i like that', 'yammi!']
 const FOOD_ITEMS  = [
-  { id: 'berry',  label: '🍓' },
-  { id: 'cake',   label: '🍰' },
-  { id: 'drop',   label: '🫐' },
+  { id: 'berry',   label: '🍓', style: '', reaction: null },
+  { id: 'glyph1',  label: 'ﾊ',  style: 'color:#00ff41; font-size:2.2rem; text-shadow: 0 0 8px #00ff41;', reaction: 'noo!!', reactionState: 'sad' },
+  { id: 'bubble',  label: '🫧', style: '', reaction: "it's funny!!", playEffect: true },
 ]
 
 export class CareScene {
@@ -70,7 +71,7 @@ export class CareScene {
             <span
               class="food-item"
               data-food="${f.id}"
-              style="font-size:1.8rem; cursor:grab; user-select:none;"
+              style="font-size:1.8rem; cursor:grab; user-select:none; ${f.style}"
             >${f.label}</span>
           `).join('')}
         </div>
@@ -78,8 +79,8 @@ export class CareScene {
         <div id="care-status" style="
           border-top: 1px solid #00ff4144;
           padding: 0.3rem 0.75rem;
-          font-size: 0.9rem;
-          min-height: 1.8rem;
+          font-size: 1.5rem;
+          min-height: 2.8rem;
           letter-spacing: 0.05em;
         ">
           <span style="opacity:0.5;">&gt;</span> <span id="care-status-text">_</span>
@@ -133,6 +134,7 @@ export class CareScene {
     if (this._ready) return
     this._actions++
     playerData.capture('careInteractions', this._actions)
+    sfx.pet()
     this.sprite.setState('happy', 2000)
     this.sprite.triggerBounce()
     this._spawnParticles()
@@ -202,14 +204,57 @@ export class CareScene {
     const hit  = e.clientX >= rect.left && e.clientX <= rect.right
                && e.clientY >= rect.top  && e.clientY <= rect.bottom
 
-    if (hit && !this._ready) {
+    const item = FOOD_ITEMS.find(f => f.id === foodId)
+    const playRect = this._playArea.getBoundingClientRect()
+    const inPlayArea = e.clientX >= playRect.left && e.clientX <= playRect.right
+                    && e.clientY >= playRect.top  && e.clientY <= playRect.bottom
+
+    if (item?.playEffect && inPlayArea && !this._ready) {
       this._actions++
       playerData.capture('careInteractions', this._actions)
-      this.sprite.setState('happy', 2000)
-      this.sprite.triggerEat()
-      const item = FOOD_ITEMS.find(f => f.id === foodId)
-      this._setStatus(`Miniyou ate the ${item?.label ?? 'food'}!`)
+      sfx.bubbles()
+      this._spawnBubbles()
+      this.sprite.setState('happy', 3000)
+      this.sprite.triggerBounce()
+      this._setStatus(item.reaction)
       this._checkExit()
+    } else if (hit && !this._ready) {
+      this._actions++
+      playerData.capture('careInteractions', this._actions)
+      if (item?.reactionState === 'sad') {
+        sfx.dislike()
+      } else {
+        sfx.feed()
+      }
+      this.sprite.setState(item?.reactionState ?? 'happy', 2000)
+      this.sprite.triggerEat()
+      this._setStatus(item?.reaction ?? `Miniyou loves you!`)
+      this._checkExit()
+    }
+  }
+
+  // ── Bubbles ──────────────────────────────────────────────────────────────
+
+  _spawnBubbles() {
+    const playRect = this._playArea.getBoundingClientRect()
+    for (let i = 0; i < 18; i++) {
+      const b = document.createElement('span')
+      b.textContent = '🫧'
+      const x = Math.random() * (playRect.width - 30)
+      const duration = 1.2 + Math.random() * 1.5
+      const delay = Math.random() * 0.6
+      b.style.cssText = `
+        position: absolute;
+        font-size: ${0.8 + Math.random() * 1.2}rem;
+        left: ${x}px;
+        bottom: 0;
+        pointer-events: none;
+        opacity: 1;
+        animation: bubble-float ${duration}s ease-in ${delay}s forwards;
+        z-index: 10;
+      `
+      this._playArea.appendChild(b)
+      setTimeout(() => b.remove(), (duration + delay + 0.1) * 1000)
     }
   }
 

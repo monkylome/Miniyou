@@ -1,14 +1,29 @@
-// Manages looping background music tracks and crossfades.
-export class MusicManager {
+class MusicManager {
   constructor() {
-    this.current = null
+    this._audio = null
   }
 
-  play(track) {
-    // M6
+  play(src, volume = 0.4) {
+    if (this._audio) {
+      this._audio.pause()
+      this._audio = null
+    }
+    this._audio = new Audio(src)
+    this._audio.loop = true
+    this._audio.volume = volume
+    this._audio.play().catch(() => {})
   }
 
   stop() {
-    // M6
+    if (this._audio) {
+      this._audio.pause()
+      this._audio = null
+    }
+  }
+
+  setVolume(v) {
+    if (this._audio) this._audio.volume = v
   }
 }
+
+export const musicManager = new MusicManager()

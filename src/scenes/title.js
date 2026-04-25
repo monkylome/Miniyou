@@ -1,3 +1,5 @@
+import { musicManager } from '../audio/musicManager.js'
+
 export class TitleScene {
   constructor(sceneManager) {
     this.sm = sceneManager
@@ -57,7 +59,10 @@ export class TitleScene {
       </div>
     `
 
-    this._onClick = () => this.sm.goto('care')
+    this._onClick = () => {
+      musicManager.play('./audio/music/drmseq-space-station.mp3', 0.20)
+      this.sm.goto('care')
+    }
     document.getElementById('begin-btn').addEventListener('click', this._onClick)
 
     // Blinking cursor prompt

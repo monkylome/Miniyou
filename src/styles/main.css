@@ -108,6 +108,12 @@ input[type="text"]::placeholder {
   to   { width: 0%; }
 }
 
+@keyframes bubble-float {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  80%  { opacity: 0.8; }
+  100% { transform: translateY(-320px) scale(0.4); opacity: 0; }
+}
+
 @keyframes flicker {
   0%, 100% { opacity: 1; }
   92%       { opacity: 1; }

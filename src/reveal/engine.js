@@ -19,7 +19,7 @@ const TECHNIQUES = [
     id: 'authoritySpoof',
     name: 'Authority Spoof',
     description: 'A fake credential, institution, or official title is used to make a request seem legitimate and not worth questioning.',
-    captureKey: 'occupation',
+    captureKey: 'phoneNumber',
     captureLabel: 'What you shared',
   },
   {
