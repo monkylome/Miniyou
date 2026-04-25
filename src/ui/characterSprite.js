@@ -50,6 +50,9 @@ const STATES = {
 
 function buildSVG(state, size = 80) {
   const s = STATES[state] || STATES.idle
+  if (state === 'idle') {
+    return `<img id="miniyou-svg" src="./sprites/miniyou-idle.png" width="${size}" height="${size}" style="cursor:pointer; animation: idle-float 5s ease-in-out infinite; image-rendering: pixelated;" />`
+  }
   return `
     <svg width="${size}" height="${size}" viewBox="0 0 80 80" style="cursor:pointer; animation: idle-float 3s ease-in-out infinite;" id="miniyou-svg">
       <!-- fur bumps -->
@@ -101,17 +104,17 @@ export class CharacterSprite {
   }
 
   triggerBounce() {
-    const svg = this.el?.querySelector('#miniyou-svg')
-    if (!svg) return
-    svg.style.animation = 'none'
-    svg.offsetHeight // reflow
-    svg.style.animation = 'bounce 0.3s ease, idle-float 3s ease-in-out 0.3s infinite'
+    const el = this.el?.querySelector('#miniyou-svg')
+    if (!el) return
+    el.style.animation = 'none'
+    el.offsetHeight
+    el.style.animation = 'bounce 0.3s ease, idle-float 3s ease-in-out 0.3s infinite'
   }
 
   triggerEat() {
-    const svg = this.el?.querySelector('#miniyou-svg')
-    if (!svg) return
-    svg.style.animation = 'eat 0.4s ease, idle-float 3s ease-in-out 0.4s infinite'
+    const el = this.el?.querySelector('#miniyou-svg')
+    if (!el) return
+    el.style.animation = 'eat 0.4s ease, idle-float 3s ease-in-out 0.4s infinite'
   }
 
   destroy() {

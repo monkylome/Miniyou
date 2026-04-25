@@ -3,6 +3,7 @@ import { DialogueEngine } from '../dialogue/engine.js'
 import { TimerService } from '../dialogue/timer.js'
 import { script } from '../dialogue/script.js'
 import { playerData } from '../state/playerData.js'
+import { musicManager } from '../audio/musicManager.js'
 
 export class GameScene {
   constructor(sceneManager) {
@@ -22,6 +23,7 @@ export class GameScene {
     this.timer.clear()
 
     if (!this.engine.hasMore()) {
+      musicManager.stop()
       this.sm.goto('reveal')
       return
     }
@@ -136,7 +138,10 @@ export class GameScene {
     const inputEl = document.getElementById('beat-input')
     if (inputEl) {
       inputEl.innerHTML = `<button id="expire-btn">Continue…</button>`
-      document.getElementById('expire-btn').addEventListener('click', () => this._render())
+      document.getElementById('expire-btn').addEventListener('click', () => {
+        musicManager.stop()
+        this.sm.goto('reveal')
+      })
     }
   }
 

@@ -36,7 +36,7 @@ export const script = [
     id: 'social_proof',
     technique: 'socialProof',
     characterState: 'happy',
-    line: `{playerName}, I can bypass the security protocols using some infos to protect our home systems from the incoming attack. Which neighbourhood do you live in?`,
+    line: `{playerName}, I can bypass the security protocols using some infos to protect our home systems like i did with whole neighbourhood. Which neighbourhood do you live in?`,
     input: {
       type: 'text',
       capture: 'socialProofResponse',
@@ -78,7 +78,7 @@ export const script = [
     id: 'urgency',
     technique: 'urgency',
     characterState: 'scared',
-    line: `The registration window closes in seconds — after that I'll no be able to protect our home systems. Click the link RIGHT NOW, {playerName}. Time is running out!`,
+    line: `The registration window closes in seconds — after that I'll no longer be able to protect our home systems. Click the link RIGHT NOW, {playerName}. Time is running out!`,
     input: {
       type: 'choice',
       capture: 'clickedExternalLink',
@@ -94,29 +94,4 @@ export const script = [
     },
   },
 
-  // ── 7. Post-link reaction ────────────────────────────────────────────────
-  {
-    id: 'post_link',
-    technique: null,
-    characterState: 'happy',
-    line: `Thank you, {playerName}. You trusted me. That means everything. Now I can tell you the truth about why I really needed you here.`,
-    input: {
-      type: 'none',
-      capture: null,
-      options: ['Continue…'],
-    },
-  },
-
-  // ── 8. Final beat — transition to reveal ────────────────────────────────
-  {
-    id: 'reveal_hook',
-    technique: null,
-    characterState: 'idle',
-    line: `Actually… let me show you something. Everything I just said to you — every word — was a technique. A pattern. Used every day by real systems to make real people do things they didn't intend to.`,
-    input: {
-      type: 'none',
-      capture: null,
-      options: ['Show me.'],
-    },
-  },
 ]

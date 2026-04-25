@@ -92,8 +92,8 @@ export class CareScene {
 
     // Render creature
     this.sprite = new CharacterSprite(this._playArea)
-    this.sprite._size = 90
-    this.sprite.render(90)
+    this.sprite._size = 200
+    this.sprite.render(200)
 
     const wrapper = document.getElementById('creature-wrapper')
     wrapper.style.position = 'absolute'
@@ -138,8 +138,41 @@ export class CareScene {
     this.sprite.setState('happy', 2000)
     this.sprite.triggerBounce()
     this._spawnParticles()
-    this._setStatus(PET_LINES[Math.floor(Math.random() * PET_LINES.length)])
+    const petLine = PET_LINES[Math.floor(Math.random() * PET_LINES.length)]
+    this._spawnSpeechBubble(petLine)
+    this._setStatus(petLine)
     this._checkExit()
+  }
+
+  // ── Speech bubble ────────────────────────────────────────────────────────
+
+  _spawnSpeechBubble(text) {
+    const wrapper = document.getElementById('creature-wrapper')
+    if (!wrapper) return
+    const rect     = wrapper.getBoundingClientRect()
+    const playRect = this._playArea.getBoundingClientRect()
+
+    const bubble = document.createElement('div')
+    bubble.textContent = text
+    bubble.style.cssText = `
+      position: absolute;
+      left: ${rect.left - playRect.left + rect.width / 2}px;
+      top:  ${rect.top  - playRect.top  - 54}px;
+      transform: translateX(-50%);
+      background: #0a1a0a;
+      border: 1px solid #00ff4166;
+      color: #00ff41;
+      font-family: 'VT323', monospace;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.7rem;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 20;
+      animation: bubble-speech 2s ease forwards;
+    `
+    this._playArea.appendChild(bubble)
+    setTimeout(() => bubble.remove(), 2000)
   }
 
   // ── Particles ────────────────────────────────────────────────────────────
@@ -228,7 +261,9 @@ export class CareScene {
       }
       this.sprite.setState(item?.reactionState ?? 'happy', 2000)
       this.sprite.triggerEat()
-      this._setStatus(item?.reaction ?? `Miniyou loves you!`)
+      const feedLine = item?.reaction ?? `Miniyou loves you!`
+      this._spawnSpeechBubble(feedLine)
+      this._setStatus(feedLine)
       this._checkExit()
     }
   }
