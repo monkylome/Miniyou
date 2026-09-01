@@ -1,6 +1,7 @@
 // Beat shape:
 // { id, technique, characterState, line, input: { type, capture, placeholder?, options? }, timer? }
 // input.type: 'text' | 'choice' | 'none'
+// choice options: a plain string (captured verbatim) or { label, value }
 // timer shape: { seconds, onExpire: { capture, value, sadLine } }
 export const script = [
   // ── 1. Name capture ─────────────────────────────────────────────────────
@@ -22,7 +23,7 @@ export const script = [
     id: 'reciprocity',
     technique: 'reciprocity',
     characterState: 'idle',
-    line: `I've been protecting your home systems from threats all this time, running silent scans every night. So i need you to verify your identity to keep the protection active. Will you help me?`,
+    line: `I've been protecting your home systems from threats all this time, running silent scans every night. So I need you to verify your identity to keep the protection active. Will you help me?`,
     input: {
       type: 'choice',
       capture: 'reciprocityResponse',
@@ -36,7 +37,7 @@ export const script = [
     id: 'social_proof',
     technique: 'socialProof',
     characterState: 'happy',
-    line: `{playerName}, I can bypass the security protocols using some infos to protect our home systems like i did with whole neighbourhood. Which neighbourhood do you live in?`,
+    line: `{playerName}, I can bypass the security protocols using some information to protect our home systems like I did with the whole neighbourhood. Which neighbourhood do you live in?`,
     input: {
       type: 'text',
       capture: 'socialProofResponse',
@@ -82,7 +83,10 @@ export const script = [
     input: {
       type: 'choice',
       capture: 'clickedExternalLink',
-      options: ['Protect our systems now 🔗', "Wait… I need to think."],
+      options: [
+        { label: 'Protect our systems now 🔗', value: true },
+        { label: "Wait… I need to think.",     value: false },
+      ],
     },
     timer: {
       seconds: 20,

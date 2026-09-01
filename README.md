@@ -43,8 +43,6 @@ title ──► care ──► game ──► reveal ──┐
 
 **Reveal** — [reveal.js](src/scenes/reveal.js). The payload. One block per technique: what it is, what you gave up, and a real-world example of the same attack. `PLAY AGAIN` resets state and returns to Title.
 
-**End** — [end.js](src/scenes/end.js). Currently unreachable; see [Known gaps](#known-gaps).
-
 ### The care phase in detail
 
 Three ways to interact:
@@ -65,15 +63,15 @@ Each beat in [script.js](src/dialogue/script.js) is tagged with a `technique`. [
 
 The script opens with a setup beat — the `intro`, which asks your name and stores it as `playerName`. Then:
 
-1. **Reciprocity** (`reciprocity` → `reciprocityResponse`). *"I've been protecting your home systems from threats all this time… so I need you to verify your identity. Will you help me?"* A favour you never asked for, converted into an obligation.
+1. **Reciprocity** (`reciprocity` → `reciprocityResponse`). *"I've been protecting your home systems from threats all this time… So I need you to verify your identity to keep the protection active. Will you help me?"* A favour you never asked for, converted into an obligation.
 
-2. **Social Proof** (`social_proof` → `socialProofResponse`). *"I can bypass the security protocols like I did with the whole neighbourhood. Which neighbourhood do you live in?"* The crowd makes a suspicious request feel routine — and harvests your location in the process.
+2. **Social Proof** (`social_proof` → `socialProofResponse`). *"I can bypass the security protocols using some information… like I did with the whole neighbourhood. Which neighbourhood do you live in?"* The crowd makes a suspicious request feel routine — and harvests your location in the process.
 
 3. **Authority Spoof** (`authority` → `phoneNumber`). *"SafeNet just needs your number to finish setting things up."* An invented institution lends the request legitimacy it has not earned.
 
-4. **Fear Appeal** (`fear_appeal` → `fearResponse`). *"Your account has been compromised. If you do not verify within 24 hours, your account will be permanently suspended."* Manufactured distress to bypass deliberation.
+4. **Fear Appeal** (`fear_appeal` → `fearResponse`). *"Your account has been compromised. Unusual activity detected. If you do not verify within 24 hours, your account will be permanently suspended."* Manufactured distress to bypass deliberation.
 
-5. **Urgency** (`urgency` → `clickedExternalLink`). *"Click the link RIGHT NOW."* Runs under a **20-second countdown** — the only timed beat in the game. A red draining bar and a live second counter run while you decide.
+5. **Urgency** (`urgency` → `clickedExternalLink`). *"The registration window closes in seconds… Click the link RIGHT NOW, {playerName}."* Runs under a **20-second countdown** — the only timed beat in the game. A red draining bar and a live second counter run while you decide.
 
 The urgency beat records three distinct outcomes, and the reveal reports each one differently: `true` if you clicked the link, `false` if you explicitly declined, and `'timeout'` if you froze — in which case Miniyou guilt-trips you and the game skips straight to the reveal.
 
@@ -91,8 +89,7 @@ src/
 │   ├── title.js               Title screen + music kickoff
 │   ├── care.js                Care phase: wander, pet, drag-feed, particles, glitch
 │   ├── game.js                Dialogue renderer: sprite, bubble, inputs, countdown UI
-│   ├── reveal.js              Post-session analysis screen
-│   └── end.js                 Farewell screen (unreachable — see Known gaps)
+│   └── reveal.js              Post-session analysis screen
 ├── dialogue/
 │   ├── script.js              ← THE SCRIPT. Plain data. Edit here to change the writing.
 │   ├── source.js              ScriptedSource — the DialogueSource interface
@@ -108,12 +105,14 @@ src/
 │   └── sfx.js                 Web Audio API oscillators — no sound files needed
 ├── ui/
 │   └── characterSprite.js     PNG sprite renderer, state swapping, bounce/eat triggers
+│                              (4 states: idle, happy, sad, mad)
 └── styles/
     └── main.css               Global CRT theme + all @keyframes
 
 public/
 ├── sprites/                   miniyou-{idle,happy,sad,mad}.png
 └── audio/music/               drmseq-space-station.mp3
+                               (no sfx/ folder — effects are synthesised)
 ```
 
 ### Design notes
@@ -146,23 +145,11 @@ This matters, because a tool that teaches about data harvesting must not harvest
 
 ## Known gaps
 
-An honest list of what is unfinished in the current build. [§12 of the PRD](docs/prd.md) covers the same ground with the design reasoning attached.
+A short and honest list. [§12 of the PRD](docs/prd.md) covers the same ground with the design reasoning attached.
 
 **The care phase is counted but never shown.** `careInteractions` is captured on every pet and feed in [care.js](src/scenes/care.js), but [reveal/engine.js](src/reveal/engine.js) never reads it, so the reveal says nothing about it. The original design called for a *"you petted it N times"* line as the foundation of the emotional capture. This is the most worthwhile unfinished piece in the project — the data is already there.
 
-**The `end` scene is unreachable.** [manager.js](src/scenes/manager.js#L37) registers it, but no scene calls `goto('end')` — the reveal's `PLAY AGAIN` returns to the title instead. The scene is written and works; it simply has no entry point.
-
-**Three UI classes are unused stubs.** [dialogueBox.js](src/ui/dialogueBox.js), [foodItem.js](src/ui/foodItem.js), and [textInput.js](src/ui/textInput.js) contain only `// M2` and `// M3` placeholder comments. Their functionality was implemented inline in `game.js` and `care.js` instead. They can be deleted.
-
-**The `hungry` sprite state has no asset.** `'hungry'` is listed in `VALID_STATES` in both [characterSprite.js](src/ui/characterSprite.js#L2) and [game.js](src/scenes/game.js#L149), but `public/sprites/miniyou-hungry.png` does not exist. Nothing currently requests it, so this is latent rather than broken — but requesting it would produce a broken image.
-
 **Drag-to-feed is mouse-only.** It uses `mousedown` / `mousemove` / `mouseup` with no touch events. Desktop browsers only, as scoped.
-
-**`unmount()` in care.js does not remove its document listeners.** [care.js:418-419](src/scenes/care.js#L418-L419) calls `removeEventListener` with a fresh `.bind(this)`, which creates a new function reference and therefore removes nothing. Harmless today because the scene is never re-entered without a full state reset, but it is a real leak if the flow changes.
-
-**A dead element lookup on timer expiry.** [game.js:135](src/scenes/game.js#L135) looks for an element with id `beat-timer`, which is never rendered — the ids in use are `timer-bar` and `beat-timer-count`. The lookup silently does nothing, so the drained red bar stays on screen instead of hiding.
-
-**The engine special-cases one capture key.** [game.js:192](src/scenes/game.js#L192) hardcodes `input.capture === 'clickedExternalLink'` to turn a choice index into a boolean. That is a script detail leaking into the renderer; giving each option its own `value` field would be the clean fix.
 
 **No tests and no linter.** Deliberate — the pilot was time-boxed.
 

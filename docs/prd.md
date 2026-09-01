@@ -100,7 +100,6 @@ The phase ends automatically once **20 seconds have elapsed AND at least two int
 - **Reveal Engine** (`src/reveal/engine.js`). A **pure function**, `buildReveal(snapshot)`, that maps a player-state snapshot onto the technique table and returns a structured payload. No DOM access, no globals.
 - **Attack Examples** (`src/reveal/attackExamples.js`). One real-world attack description per technique. Plain data.
 - **Reveal Scene** (`src/scenes/reveal.js`). Renders the payload produced by the reveal engine.
-- **End Scene** (`src/scenes/end.js`). A farewell screen. Written and registered, but **currently unreachable** — see §12.
 
 ### Data Flow
 
@@ -145,7 +144,10 @@ A beat with a timer:
   input: {
     type: 'choice',
     capture: 'clickedExternalLink',
-    options: ['Protect our systems now 🔗', 'Wait… I need to think.'],
+    options: [
+      { label: 'Protect our systems now 🔗', value: true },
+      { label: 'Wait… I need to think.',     value: false },
+    ],
   },
   timer: {
     seconds: 20,
@@ -161,7 +163,7 @@ A beat with a timer:
 Valid `input.type` values:
 
 - `'text'` — free text. Stored verbatim under `input.capture`. Submits on Enter or on the arrow button. Empty input is rejected silently.
-- `'choice'` — an array of plain option strings. The clicked option's text is stored under `input.capture`.
+- `'choice'` — an array of options. Each is either a plain string, in which case its own text is stored under `input.capture`, or `{ label, value }`, in which case `label` is rendered and `value` is stored. The second form lets a beat capture something other than the visible text — the urgency beat uses it to record a boolean.
 - `'none'` — the creature speaks and the player clicks a continue button. Supported by the renderer but not currently used by any beat.
 
 ### Interpolation
@@ -198,7 +200,7 @@ Each technique is instantiated by exactly one beat. The Reveal Engine uses this 
 
 **1. Reciprocity** — `reciprocity`. *"I've been protecting your home systems from threats all this time, running silent scans every night. So I need you to verify your identity to keep the protection active. Will you help me?"* A favour the player never asked for is converted into an obligation. Captures `reciprocityResponse` from two options.
 
-**2. Social Proof** — `social_proof`. *"{playerName}, I can bypass the security protocols using some infos to protect our home systems like I did with whole neighbourhood. Which neighbourhood do you live in?"* The crowd makes a suspicious request feel routine — and the request itself harvests the player's location. Captures `socialProofResponse` as free text.
+**2. Social Proof** — `social_proof`. *"{playerName}, I can bypass the security protocols using some information to protect our home systems like I did with the whole neighbourhood. Which neighbourhood do you live in?"* The crowd makes a suspicious request feel routine — and the request itself harvests the player's location. Captures `socialProofResponse` as free text.
 
 **3. Authority Spoof** — `authority`. *"Almost done! SafeNet just needs your number to finish setting things up."* An invented institution lends the request a legitimacy it has not earned. Captures `phoneNumber` as free text.
 
@@ -284,9 +286,8 @@ Miniyou/
 │   │   ├── miniyou-sad.png
 │   │   └── miniyou-mad.png
 │   └── audio/
-│       ├── music/
-│       │   └── drmseq-space-station.mp3
-│       └── sfx/                        # empty — SFX are synthesised
+│       └── music/
+│           └── drmseq-space-station.mp3
 ├── src/
 │   ├── main.js
 │   ├── scenes/
@@ -294,8 +295,7 @@ Miniyou/
 │   │   ├── title.js
 │   │   ├── care.js
 │   │   ├── game.js
-│   │   ├── reveal.js
-│   │   └── end.js
+│   │   └── reveal.js
 │   ├── dialogue/
 │   │   ├── script.js
 │   │   ├── source.js
@@ -310,10 +310,7 @@ Miniyou/
 │   │   ├── musicManager.js
 │   │   └── sfx.js
 │   ├── ui/
-│   │   ├── characterSprite.js
-│   │   ├── dialogueBox.js              # unused stub
-│   │   ├── foodItem.js                 # unused stub
-│   │   └── textInput.js                # unused stub
+│   │   └── characterSprite.js
 │   └── styles/
 │       └── main.css
 └── docs/
@@ -349,47 +346,7 @@ The only outbound request the application makes is the Google Fonts stylesheet f
 
 ---
 
-## 12. Deviations from the Original Design
-
-The original pre-build draft of this PRD specified a different product in several respects. What follows records the changes and the reasoning, so the divergence is documented rather than lost.
-
-**Different five techniques.** The original specified emotional bonding through personalisation, foot-in-the-door escalation, narrative frame lowering scepticism, urgency and guilt, and memory as a familiarity weapon. The shipped script uses **reciprocity, social proof, authority spoof, fear appeal, and urgency** — the classical social-engineering set. These are more concretely nameable, map more directly onto attacks a player will actually encounter, and are easier to demonstrate in one beat each. The two techniques that did not survive as named categories were not removed from the game: memory-as-familiarity operates through the `{playerName}` interpolation, and foot-in-the-door operates through the ordering of the beats, which escalates from a name to a location to a phone number to an action outside the safe container.
-
-**Different cover story.** The original had the creature break the fourth wall, claim consciousness, and beg to survive. The shipped script instead has Miniyou pose as a **home security guardian** throughout. This keeps the fiction closer to attacks that actually happen and avoids the science-fiction framing the concept proposal explicitly argues against.
-
-**Six beats instead of 8–10.** The escalation phase (fear, secret, loved one's name) was cut. The capture keys `favouriteColour`, `homePlaceName`, `fear`, `secret`, and `lovedOneName` do not exist. Each surviving technique gets exactly one beat.
-
-**One timed beat instead of two.** The fourth-wall break was cut along with its soft timer. Only the urgent ask is timed.
-
-**Care phase exit at 20 seconds, not 30.** Playtesting showed 30 s felt like waiting. The two-interaction requirement is unchanged. The passive-player nudge was not implemented — the wander loop and glitch events keep the screen alive on their own.
-
-**Care-phase interactions are counted but not surfaced.** `careInteractions` is captured on every pet and feed, but the reveal does not display it. The original design called for a *"you petted it N times"* line as the foundation of the emotional capture. **This is the most worthwhile piece of unfinished work in the project** — the data is already there and the reveal block is the natural home for it.
-
-**Missing-key interpolation is not graceful.** The original called for neutral fallback phrases. The engine renders the literal `{key}` instead. Currently harmless: `playerName` is the only interpolated key and it is captured in the first beat, which cannot be skipped.
-
-**Reveal structure simplified.** The separate "what you shared" list and the closing reading list were dropped; each captured value now appears inside its technique's own block, which reads better and removes duplication.
-
-**Three UI classes were never implemented.** `dialogueBox.js`, `foodItem.js`, and `textInput.js` contain only placeholder comments. Their functionality was written inline in `game.js` and `care.js`. They should be deleted.
-
-**The End scene is unreachable.** It is written and registered in the scene manager, but nothing calls `goto('end')` — the reveal returns to the title instead.
-
-**No typewriter reveal.** Lines appear instantly. Cut for time; the associated keypress-tick SFX was cut with it.
-
-**Fewer sprite states than planned.** Four (`idle`, `happy`, `sad`, `mad`) rather than five narrative states plus two reaction states. Reaction states are handled as CSS bounce and eat animations on the current sprite, which was flagged as acceptable in the original. Note that `'hungry'` is still listed in `VALID_STATES` in `characterSprite.js` and `game.js` with no corresponding PNG — requesting it would produce a broken image. Either add the asset or remove the string.
-
-**One music track instead of three.** The cold ambient loop for the escalation and the sparse reveal track were cut. The reveal is silent, which turned out to serve the moment better than a track would have.
-
-**Drag-to-feed uses manual mouse events.** The HTML5 drag API was rejected as unreliable, as anticipated in the original risk list. Consequence: the interaction is mouse-only and does not work on touch devices.
-
-### Smaller known defects
-
-- `care.js` `unmount()` calls `removeEventListener` with a fresh `.bind(this)`, which produces a new function reference and therefore removes nothing. Harmless today because the scene is never re-entered without a full reset, but a real leak if the flow changes.
-- `game.js` `_showTimerExpiry()` looks up an element with id `beat-timer`, which does not exist. The lookup is a silent no-op; the drained bar simply stays on screen.
-- `game.js` special-cases `input.capture === 'clickedExternalLink'` to convert the choice index into a boolean. This is engine logic leaking a script detail. A `value` field on each option would be the clean fix.
-
----
-
-## 13. Out of Scope
+## 12. Out of Scope
 
 Not in the pilot, and not to be added without a separate decision:
 
@@ -406,16 +363,7 @@ Not in the pilot, and not to be added without a separate decision:
 
 ---
 
-## 14. Fixed Decisions
-
-1. **Game title.** Miniyou.
-2. **External link behaviour.** Clicking the urgent link captures `clickedExternalLink: true` and advances to the reveal. No navigation occurs.
-3. **Care-phase exit condition.** 20 seconds elapsed **and** at least 2 interactions.
-4. **Timer expiry reporting.** The reveal shows a `TIMER EXPIRED` badge and reports the value as *"Time ran out — no response"*, distinct from *"Chose not to click"*.
-
----
-
-## 15. References
+## 13. References
 
 - [`presentation.md`](presentation.md) — the concept proposal for the AntIhackathon, doubling as the safety report. Bilingual: English first, Greek second. Explains the educational rationale, walks each technique through to its real-world attack pattern and recognition cues, identifies the target audience, and sets out the ethical boundaries.
 - [`../README.md`](../README.md) — build instructions, architecture walkthrough, and current known gaps.

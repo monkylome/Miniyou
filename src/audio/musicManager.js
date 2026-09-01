@@ -20,10 +20,6 @@ class MusicManager {
       this._audio = null
     }
   }
-
-  setVolume(v) {
-    if (this._audio) this._audio.volume = v
-  }
 }
 
 export const musicManager = new MusicManager()

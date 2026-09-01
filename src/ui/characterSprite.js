@@ -1,5 +1,5 @@
 // Valid creature states that map to image files
-const VALID_STATES = ['idle', 'happy', 'sad', 'mad', 'hungry']
+const VALID_STATES = ['idle', 'happy', 'sad', 'mad']
 
 function buildImageHtml(state, size = 80) {
   // Default to idle if state is invalid

@@ -34,7 +34,6 @@ export class SceneManager {
       care:   () => import('./care.js').then(m   => new m.CareScene(this)),
       game:   () => import('./game.js').then(m   => new m.GameScene(this)),
       reveal: () => import('./reveal.js').then(m => new m.RevealScene(this)),
-      end:    () => import('./end.js').then(m    => new m.EndScene(this)),
     }
     if (!loaders[name]) throw new Error(`Unknown scene: ${name}`)
     return loaders[name]()

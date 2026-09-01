@@ -109,8 +109,12 @@ export class CareScene {
     document.querySelectorAll('.food-item').forEach(el => {
       el.addEventListener('mousedown', e => this._onFoodMouseDown(e, el))
     })
-    document.addEventListener('mousemove', this._onMouseMove.bind(this))
-    document.addEventListener('mouseup',   this._onMouseUp.bind(this))
+    // Bind once and keep the references — removeEventListener needs the
+    // same function object, and a fresh .bind() would never match.
+    this._boundMouseMove = this._onMouseMove.bind(this)
+    this._boundMouseUp   = this._onMouseUp.bind(this)
+    document.addEventListener('mousemove', this._boundMouseMove)
+    document.addEventListener('mouseup',   this._boundMouseUp)
 
     // Wander tick
     this._wanderTo(50, 50)
@@ -415,8 +419,8 @@ export class CareScene {
     clearInterval(this._tickId)
     clearTimeout(this._wanderId)
     clearTimeout(this._glitchId)
-    document.removeEventListener('mousemove', this._onMouseMove.bind(this))
-    document.removeEventListener('mouseup',   this._onMouseUp.bind(this))
+    document.removeEventListener('mousemove', this._boundMouseMove)
+    document.removeEventListener('mouseup',   this._boundMouseUp)
     if (this.sprite) this.sprite.destroy()
   }
 }

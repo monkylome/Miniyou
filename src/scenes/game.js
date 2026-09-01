@@ -47,7 +47,7 @@ export class GameScene {
         gap: 1.5rem;
       ">
         ${timer ? `
-          <div style="display:flex; flex-direction:column; gap:0.3rem;">
+          <div id="beat-timer" style="display:flex; flex-direction:column; gap:0.3rem;">
             <div style="font-size:0.75rem; letter-spacing:0.15em; opacity:0.6; display:flex; justify-content:space-between;">
               <span style="color:#ff4444;">⚠ TIME REMAINING</span>
               <span id="beat-timer-count">${timer.seconds}s</span>
@@ -146,7 +146,7 @@ export class GameScene {
   }
 
   _buildSprite(state) {
-    const validStates = ['idle', 'happy', 'sad', 'mad', 'hungry']
+    const validStates = ['idle', 'happy', 'sad', 'mad']
     const displayState = validStates.includes(state) ? state : 'idle'
     return `<img src="./sprites/miniyou-${displayState}.png" width="70" height="70" style="flex-shrink:0; animation: idle-float 3s ease-in-out infinite; image-rendering: pixelated;" />`
   }
@@ -180,18 +180,22 @@ export class GameScene {
       field.focus()
 
     } else if (input.type === 'choice') {
+      // An option is either a plain string (captured verbatim) or
+      // { label, value } when the beat needs to capture something else.
+      const options = input.options.map(opt =>
+        typeof opt === 'string' ? { label: opt, value: opt } : opt
+      )
+
       el.innerHTML = `
         <div style="display:flex; flex-direction:column; gap:0.6rem; align-items:stretch; width:260px;">
-          ${input.options.map((opt, i) =>
-            `<button class="choice-btn" data-index="${i}" style="text-align:left; padding:0.4em 1em;">${opt}</button>`
+          ${options.map((opt, i) =>
+            `<button class="choice-btn" data-index="${i}" style="text-align:left; padding:0.4em 1em;">${opt.label}</button>`
           ).join('')}
         </div>
       `
       el.querySelectorAll('.choice-btn').forEach((btn, i) => {
         btn.addEventListener('click', () => {
-          const isLinkOption = input.capture === 'clickedExternalLink'
-          const value = isLinkOption ? (i === 0 ? true : false) : btn.textContent.trim()
-          playerData.capture(input.capture, value)
+          playerData.capture(input.capture, options[i].value)
           this._render()
         })
       })
